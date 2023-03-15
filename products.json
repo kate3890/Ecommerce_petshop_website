@@ -1,0 +1,34 @@
+{
+  "products": [
+    {
+      "name": "Large Double Bowl",
+      "image": "large_bowl.png",
+      "price": 13
+    },
+    {
+      "name": "Small single bowl",
+      "image": "small_bowl.png",
+      "price": 8.99
+    },
+    {
+      "name": "Dog leash",
+      "image": "leash.png",
+      "price": 17.99
+    },
+    {
+      "name": "Dog leash (brown)",
+      "image": "leash_brown.png",
+      "price": 17.99
+    },
+    {
+      "name": "Toy-box",
+      "image": "toy_box.png",
+      "price": 10.75
+    },
+    {
+      "name": "Wooden toy-box",
+      "image": "toy_box_wood.png",
+      "price": 17.99
+    }
+  ]
+}

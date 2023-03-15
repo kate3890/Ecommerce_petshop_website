@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Happy Tails</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+
+  <body>
+    <!--Header section is set to move as you scroll down-->
+    <section id="header">
+      <a href="#"><img src="logo.png" class="logo" /></a>
+      <div>
+        <ul id="nevbar">
+          <!--Each link links to the section in the page instead of a different page -->
+          <li><a href="#hero"> Home </a></li>
+          <li><a href="#product1">Featured Products</a></li>
+          <li><a href="#cart"> My Cart</a></li>
+          <li><a href="#section-p1"> Contact Us</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <!--The hero is done in the form of a banner with text plus a button linking to products section-->
+    <section id="hero">
+      <h4 id="hero-title">Don't miss our exclusive offers</h4>
+      <h1 id="hero-subheading">Super value deals</h1>
+      <h2 id="hero-heading">on all our products</h2>
+      <p id="hero-paragraph">Save more with coupons & up to 50% off!</p>
+      <a href="#product1"><button>Shop Now</button></a>
+    </section>
+
+    <!--This section showcases featured products-->
+    <section id="product1" class="section-p1">
+      <h2>Featured Products</h2>
+      <p id="sub">Hand picked items for you!</p>
+
+      <!--Drop Down selector menu, allows to select between bowls, leashes and toys-->
+
+      <div>
+        <label for="category-select">Select a category:</label>
+        <select id="category-select">
+          <option value="">All</option>
+          <option value="bowl">Bowls</option>
+          <option value="leash">Leashes</option>
+          <option value="toy-box">Toy Boxes</option>
+        </select>
+      </div>
+
+      <script>
+        fetch("products.json")
+          .then((response) => response.json())
+          .then((data) => {
+            let productContainer = document.querySelector("#product-container");
+
+            // function to filter products by category
+            function filterProducts(category) {
+              let filteredProducts = data.products;
+              if (category) {
+                filteredProducts = data.products.filter((product) =>
+                  product.name.toLowerCase().includes(category)
+                );
+              }
+              return filteredProducts;
+            }
+
+            // function to render products
+            function renderProducts(products) {
+              productContainer.innerHTML = "";
+              products.forEach((product) => {
+                let productElement = document.createElement("div");
+                productElement.classList.add("product");
+                productElement.innerHTML = `
+          <img src="${product.image}">
+          <h3>${product.name}</h3>
+          <button class="add-to-cart">Add to Cart</button>
+          <div class="product-quantity">
+            <button class="quantity-button minus" type="button">-</button>
+            <input class="quantity-input" type="number" value="1" min="1">
+            <button class="quantity-button plus" type="button">+</button>
+          </div>
+        `;
+                productContainer.appendChild(productElement);
+
+                // Add event listeners to the quantity buttons
+                let quantityInput =
+                  productElement.querySelector(".quantity-input");
+                let minusButton = productElement.querySelector(".minus");
+                let plusButton = productElement.querySelector(".plus");
+
+                minusButton.addEventListener("click", () => {
+                  if (quantityInput.value > 1) {
+                    quantityInput.value = parseInt(quantityInput.value) - 1;
+                  }
+                });
+
+                plusButton.addEventListener("click", () => {
+                  quantityInput.value = parseInt(quantityInput.value) + 1;
+                });
+              });
+            }
+
+            // event listener for category selector
+            let categorySelect = document.querySelector("#category-select");
+            categorySelect.addEventListener("change", () => {
+              let category = categorySelect.value.toLowerCase();
+              let filteredProducts = filterProducts(category);
+              renderProducts(filteredProducts);
+            });
+
+            // initial render of all products
+            renderProducts(data.products);
+          });
+      </script>
+
+      <div id="product-container"></div>
+
+      <script>
+        fetch("products.json")
+          .then((response) => response.json())
+          .then((data) => {
+            let productContainer = document.querySelector("#product-container");
+            data.products.forEach((product) => {
+              let productElement = document.createElement("div");
+              productElement.classList.add("product");
+              productElement.innerHTML = `
+        <img src="${product.image}">
+        <h3>${product.name}</h3>
+        <button  class="add-to-cart">Add to Cart</button>
+        <div class="product-quantity">
+              <button class="quantity-button minus" type="button">-</button>
+              <input class="quantity-input" type="number" value="1" min="1">
+              <button class="quantity-button plus" type="button">+</button>
+            </div>
+          `;
+              productContainer.appendChild(productElement);
+
+              // Add event listeners to the quantity buttons
+              let quantityInput =
+                productElement.querySelector(".quantity-input");
+              let minusButton = productElement.querySelector(".minus");
+              let plusButton = productElement.querySelector(".plus");
+
+              minusButton.addEventListener("click", () => {
+                if (quantityInput.value > 1) {
+                  quantityInput.value = parseInt(quantityInput.value) - 1;
+                }
+              });
+
+              plusButton.addEventListener("click", () => {
+                quantityInput.value = parseInt(quantityInput.value) + 1;
+              });
+            });
+          });
+      </script>
+    </section>
+
+    <!--A smaller version of the hero banner-->
+    <section id="banner2">
+      <div class="banner-box">
+        <h2>End of Season S A L E</h2>
+        <h3>Your Pets FAVORITE Gear</h3>
+        <h1>35% OFF</h1>
+        <h2>Use CODE: TRAIL35</h2>
+      </div>
+    </section>
+
+    <!--This section showcases the products already added to cart in a form of a table-->
+    <section id="cart" class="section-p1">
+      <h3>Shopping Cart</h3>
+
+      <table id="cart-table" width="100%">
+        <thead>
+          <tr>
+            <td>Image</td>
+            <td>Product</td>
+            <td>Price</td>
+            <td>Quantity</td>
+            <td>Subtotal</td>
+          </tr>
+        </thead>
+        <tbody id="cart-table-body">
+          <!--<tr>
+            <td><img src="large_bowl.png" alt="" /></td>
+            <td>Large Bowl</td>
+            <td>£13.90</td>
+            <td><input type="number" value="1" /></td>
+          </tr> -->
+        </tbody>
+      </table>
+    </section>
+
+    <!--Cart calculations: The total amount is listed here-->
+    <section id="cart-add">
+      <div id="Total">
+        <table>
+          <h3>Cart Total:</h3>
+          <tr>
+            <td><strong>Total Price: </strong></td>
+            <td>
+              <strong>£<span id="cartTotal">0.00</span></strong>
+            </td>
+          </tr>
+        </table>
+        <button class="button2">Proceed to Checkout</button>
+      </div>
+    </section>
+
+    <!--Final part of the webpage focuses on further details about the store and shows links in the form of tables-->
+    <section id="section-p1">
+      <div class="footer">
+        <img class="logo" src="logo.png" alt="#" />
+        <div class="col">
+          <h4>Contacts</h4>
+          <p><strong>Address:</strong> Madrid Road, Madrid, Spain</p>
+          <p><strong>Phone:</strong> +3498795736</p>
+          <p><strong>Hours:</strong> 9:00-18:00. Mon-Sat</p>
+        </div>
+
+        <div class="col">
+          <h4>About</h4>
+          <a href="#">About us</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms & Conditions</a>
+          <a href="#">Contact Us</a>
+        </div>
+
+        <div class="col">
+          <h4>My Account</h4>
+          <a href="#">Sign In</a>
+          <a href="#">My Wishlist</a>
+          <a href="#">View Cart</a>
+          <a href="#">Help</a>
+        </div>
+
+        <div class="copyright">
+          <p>2023: MCSBT Project - HTML/CSS/JavaScript Ecommerce Website</p>
+          <p>Created by Aikaterini Orlova</p>
+        </div>
+      </div>
+    </section>
+
+    <!--JavaScript for making the cart functional-->
+    <script type="text/javascript">
+      setTimeout(function () {
+        // JavaScript code for adding event listeners to the "Add to Cart" button
+        const addToCartButtons = document.querySelectorAll(".add-to-cart");
+        const cartItems = [];
+
+        addToCartButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const product = button.parentElement;
+            const productDetails = {
+              name: product.querySelector("h3").textContent,
+              image: product.querySelector("img").src,
+              quantity: parseInt(
+                product.querySelector(".quantity-input").value
+              ),
+              price: 13.9, // set the product price here
+            };
+            // Check if the product already exists in the cart
+            const existingProductIndex = cartItems.findIndex(
+              (item) => item.name === productDetails.name
+            );
+            if (existingProductIndex !== -1) {
+              // If the product already exists in the cart, increase its quantity
+              cartItems[existingProductIndex].quantity +=
+                productDetails.quantity;
+            } else {
+              // If the product does not exist in the cart, add it to the cart
+              cartItems.push(productDetails);
+            }
+
+            const tableBody = document.querySelector("#cart-table-body");
+
+            // Empty the table body first
+            tableBody.innerHTML = "";
+
+            cartItems.forEach((item) => {
+              const tr = document.createElement("tr");
+              let subTotal = item.price * item.quantity;
+              tr.innerHTML = `
+                  <td><img src="${item.image}" alt="" /></td>
+                  <td>${item.name}</td>
+                  <td>£${item.price.toFixed(2)}</td>
+                  <td><input disabled type="number" value="${
+                    item.quantity
+                  }" /></td>
+                  <td>£<span class="subTotal">${subTotal.toFixed(2)}</span></td>
+                `;
+
+              tableBody.appendChild(tr);
+            });
+
+            let subtotals = document.querySelectorAll(
+              "#cart-table-body .subTotal"
+            );
+            let total = 0;
+
+            subtotals.forEach(function (subtotal) {
+              total += parseFloat(subtotal.textContent);
+            });
+            let cartTotal = document.getElementById("cartTotal");
+            cartTotal.textContent = total.toFixed(2);
+          });
+        });
+      }, 2000);
+    </script>
+  </body>
+</html>
