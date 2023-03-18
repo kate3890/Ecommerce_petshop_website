@@ -75,15 +75,17 @@
                 let productElement = document.createElement("div");
                 productElement.classList.add("product");
                 productElement.innerHTML = `
-          <img src="${product.image}">
-          <h3>${product.name}</h3>
-          <button class="add-to-cart">Add to Cart</button>
-          <div class="product-quantity">
-            <button class="quantity-button minus" type="button">-</button>
-            <input class="quantity-input" type="number" value="1" min="1">
-            <button class="quantity-button plus" type="button">+</button>
-          </div>
-        `;
+                  <img src="${product.image}">
+                  <h3>${product.name}</h3>
+                  <p>£${product.price.toFixed(2)}</p>
+                  <button class="add-to-cart">Add to Cart</button>
+                  <div class="product-quantity">
+                    <button class="quantity-button minus" type="button">-</button>
+                    <input class="quantity-input" type="number" value="1" min="1">
+                    <button class="quantity-button plus" type="button">+</button>
+                  </div>
+                `;
+
                 productContainer.appendChild(productElement);
 
                 // Add event listeners to the quantity buttons
@@ -118,47 +120,6 @@
       </script>
 
       <div id="product-container"></div>
-
-      <script>
-        fetch("products.json")
-          .then((response) => response.json())
-          .then((data) => {
-            let productContainer = document.querySelector("#product-container");
-            data.products.forEach((product) => {
-              let productElement = document.createElement("div");
-              productElement.classList.add("product");
-              productElement.innerHTML = `
-        <img src="${product.image}">
-        <h3>${product.name}</h3>
-        <button  class="add-to-cart">Add to Cart</button>
-        <div class="product-quantity">
-              <button class="quantity-button minus" type="button">-</button>
-              <input class="quantity-input" type="number" value="1" min="1">
-              <button class="quantity-button plus" type="button">+</button>
-            </div>
-          `;
-              productContainer.appendChild(productElement);
-
-              // Add event listeners to the quantity buttons
-              let quantityInput =
-                productElement.querySelector(".quantity-input");
-              let minusButton = productElement.querySelector(".minus");
-              let plusButton = productElement.querySelector(".plus");
-
-              minusButton.addEventListener("click", () => {
-                if (quantityInput.value > 1) {
-                  quantityInput.value = parseInt(quantityInput.value) - 1;
-                }
-              });
-
-              plusButton.addEventListener("click", () => {
-                quantityInput.value = parseInt(quantityInput.value) + 1;
-              });
-            });
-          });
-      </script>
-    </section>
-
     <!--A smaller version of the hero banner-->
     <section id="banner2">
       <div class="banner-box">
@@ -244,71 +205,77 @@
       </div>
     </section>
 
-    <!--JavaScript for making the cart functional-->
-    <script type="text/javascript">
-      setTimeout(function () {
-        // JavaScript code for adding event listeners to the "Add to Cart" button
-        const addToCartButtons = document.querySelectorAll(".add-to-cart");
-        const cartItems = [];
+   <!--JavaScript for making the cart functional-->
+<script type="text/javascript">
+  setTimeout(function () {
+    // JavaScript code for adding event listeners to the "Add to Cart" button
+    const addToCartButtons = document.querySelectorAll(".add-to-cart");
+    const cartItems = [];
 
-        addToCartButtons.forEach((button) => {
-          button.addEventListener("click", () => {
-            const product = button.parentElement;
-            const productDetails = {
-              name: product.querySelector("h3").textContent,
-              image: product.querySelector("img").src,
-              quantity: parseInt(
-                product.querySelector(".quantity-input").value
-              ),
-              price: 13.9, // set the product price here
-            };
-            // Check if the product already exists in the cart
-            const existingProductIndex = cartItems.findIndex(
-              (item) => item.name === productDetails.name
-            );
-            if (existingProductIndex !== -1) {
-              // If the product already exists in the cart, increase its quantity
-              cartItems[existingProductIndex].quantity +=
-                productDetails.quantity;
-            } else {
-              // If the product does not exist in the cart, add it to the cart
-              cartItems.push(productDetails);
-            }
+    addToCartButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const product = button.closest(".product"); // Changed from 'button.parentElement'
+        const productPrice = parseFloat(product.querySelector("p").textContent.slice(1));
+        
+        const productDetails = {
+          name: product.querySelector("h3").textContent,
+          image: product.querySelector("img").src,
+          quantity: parseInt(
+            product.querySelector(".quantity-input").value
+          ),
+          price: productPrice,
+        };
 
-            const tableBody = document.querySelector("#cart-table-body");
+        // Check if the product already exists in the cart
+        const existingProductIndex = cartItems.findIndex(
+          (item) => item.name === productDetails.name
+        );
+        if (existingProductIndex !== -1) {
+          // If the product already exists in the cart, increase its quantity
+          cartItems[existingProductIndex].quantity +=
+            productDetails.quantity;
+        } else {
+          // If the product does not exist in the cart, add it to the cart
+          cartItems.push(productDetails);
+        }
 
-            // Empty the table body first
-            tableBody.innerHTML = "";
+        const tableBody = document.querySelector("#cart-table-body");
 
-            cartItems.forEach((item) => {
-              const tr = document.createElement("tr");
-              let subTotal = item.price * item.quantity;
-              tr.innerHTML = `
-                  <td><img src="${item.image}" alt="" /></td>
-                  <td>${item.name}</td>
-                  <td>£${item.price.toFixed(2)}</td>
-                  <td><input disabled type="number" value="${
-                    item.quantity
-                  }" /></td>
-                  <td>£<span class="subTotal">${subTotal.toFixed(2)}</span></td>
-                `;
+        // Empty the table body first
+        tableBody.innerHTML = "";
 
-              tableBody.appendChild(tr);
-            });
-
-            let subtotals = document.querySelectorAll(
-              "#cart-table-body .subTotal"
-            );
-            let total = 0;
-
-            subtotals.forEach(function (subtotal) {
-              total += parseFloat(subtotal.textContent);
-            });
-            let cartTotal = document.getElementById("cartTotal");
-            cartTotal.textContent = total.toFixed(2);
-          });
+        cartItems.forEach((item) => {
+          const tr = document.createElement("tr");
+          let subTotal = item.price * item.quantity;
+          tr.innerHTML = `
+              <td><img src="${item.image}" alt="" /></td>
+              <td>${item.name}</td>
+              <td>£${item.price.toFixed(2)}</td>
+              <td><input disabled type="number" value="${
+                item.quantity
+              }" /></td>
+              <td>£<span class="subTotal">${subTotal.toFixed(2)}</span></td>
+            `;
+          tableBody.appendChild(tr);
         });
-      }, 2000);
-    </script>
+
+        let subtotals = document.querySelectorAll(
+          "#cart-table-body .subTotal"
+        );
+        let total = 0;
+
+        subtotals.forEach(function (subtotal) {
+          total += parseFloat(subtotal.textContent);
+        });
+        let cartTotal = document.getElementById("cartTotal");
+        cartTotal.textContent = total.toFixed(2);
+      });
+    });
+  }, 2000);
+  
+</script>
+
+
+
   </body>
 </html>
