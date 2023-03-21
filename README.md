@@ -12,7 +12,7 @@
   - Any relevant technical details or comments
   - Anything that could be improved for a 2.0 version
 
-## Link:
+## Link: https://kate3890-ecommerce-projects.netlify.app/
 
 ## Project Description:
 
